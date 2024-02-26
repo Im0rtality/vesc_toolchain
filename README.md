@@ -17,7 +17,7 @@ Step 1: Open project in dev container. Docker image containing all tools is buil
 
 Step 2: Inside container:
 ```sh
-git submodule add -f https://github.com/Im0rtality/vesc_pkg.git custom/vesc_pkg
+git submodule add -b grb-ws2812-led-support https://github.com/Im0rtality/vesc_pkg.git custom/vesc_pkg
 make build/float.vescpkg VESC_PKG_PATH=custom/vesc_pkg
 ```
 
@@ -25,6 +25,6 @@ make build/float.vescpkg VESC_PKG_PATH=custom/vesc_pkg
 
 Dockerfile contains all dependencies and dev tools (ARM SDK, Qt5, etc.), meaning your dev-container based environment contains all of them. Some patches are applied to original build scripts (e.g. unhardcoding some paths).
 
-Next, we are using git submodules to add your own fork into this environment via `custom/vesc_pkg` path. You should be able to manage it similarly to git repo. This method chosen, so your fork does not include any references to this dev environment - so you can keep your pull requests clean.
+Next, we are using git submodules to add your own fork into this environment via `custom/vesc_pkg` path. You should be able to manage it similarly to git repo. This method chosen, so your fork does not include any references to this dev environment - so you can keep your pull requests clean. In this example, I'm adding `grb-ws2812-led-support` from my own fork.
 
 Lastly, we are using customized Makefile to trigger appropriate build scripts from various VESC Project repos, to auto-magically build all dependencies (e.g. you need vesc_tool to build pkg and you need built firmware to build vesc_tool). 
