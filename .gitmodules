@@ -1,0 +1,4 @@
+[submodule "custom/vesc_pkg"]
+	path = custom/vesc_pkg
+	url = https://github.com/Im0rtality/vesc_pkg.git
+	branch = grb-ws2812-led-support
