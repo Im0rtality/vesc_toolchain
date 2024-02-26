@@ -29,6 +29,9 @@ ENV VESC_FW_PATH=${ROOT_PATH}/bldc
 ENV VESC_TOOL_PATH=${ROOT_PATH}/vesc_tool
 ENV VESC_PKG_PATH=${ROOT_PATH}/vesc_pkg
 
+# Configure git to ignore Windows line endings
+RUN git config --global core.autocrlf false
+
 # Clone VESC repos
 RUN mkdir -p /vedderb && \
     git clone https://github.com/vedderb/bldc.git ${VESC_FW_PATH} && \
@@ -38,9 +41,6 @@ RUN mkdir -p /vedderb && \
 # Apply patches
 RUN echo "Fixing harcoded FWPATH in vesc_tool/build_cp_fw" && \
     sed -i 's|FWPATH="../../ARM/STM_Eclipse/BLDC_4_ChibiOS/"|FWPATH="'"${VESC_FW_PATH}"'"|' ${VESC_TOOL_PATH}/build_cp_fw
-
-# Configure git to ignore Windows line endings
-RUN git config --global core.autocrlf input
 
 # Add ARM toolchain to PATH
 ENV PATH="${PATH}:/opt/gcc-arm-none-eabi-7-2018-q2-update/bin"
