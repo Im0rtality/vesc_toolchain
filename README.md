@@ -1,8 +1,8 @@
-# VESC development toolchain
+# VESC development environment
 
-This is [Docker](https://www.docker.com/)/[devcontainers](https://containers.dev/) based development environment to simplify vedderb/bldc, vedderb/vesc_tool and vedderb/vesc_pkg compilation.
+This is [Docker](https://www.docker.com/) and [dev-containers](https://containers.dev/) based development environment to simplify vedderb/bldc, vedderb/vesc_tool and vedderb/vesc_pkg compilation.
 
-Having this in separate repo is weird, but it's easiest way to achieve this, considering community chose different path.
+Having this in separate repo is weird, but it's easiest way to achieve this, considering current possibilities.
 
 ## Prerequisites
 
@@ -11,26 +11,20 @@ Having this in separate repo is weird, but it's easiest way to achieve this, con
 
 ## Usage
 
-### Example: Compiling VESC package from modified code
+### Example: Compiling customized "float" package from a fork
 
-1. Fork this repo
-2. Pre-build Docker images: `cd .docker; make`
-3. Add your forked code as git submodule (e.g. `git submodule add -f https://github.com/Im0rtality/vesc_pkg.git custom/vesc_pkg`)
-4. Start devcontainer and and switch into it.
-5. Compile customized "float" package, including all prerequisites: `make build/float.vescpkg VESC_PKG_PATH=custom/vesc_pkg`
-    - This compiles firmware to produce `res/firmwares/res_fw.qrc` (via `build_cp_fw`) required to build vesc_tool
-    - Then compiles vesc_tool (via `build_lin_only_original`), required to compile VESC package
-    - Then compiles "float" package
-6. Compiled package is available in `build/float.vescpkg`
+Step 1: Open project in dev container. Docker image containing all tools is built while opening and takes ~10 minutes.
 
-> NOTE: You can build any package via `make build/<package>.vescpkg VESC_PKG_PATH=<relative-path-to-vesc_pkg_source-code>`. Omitting `VESC_PKG_PATH=` bulids from 
- 
-## How it works?
+Step 2: Inside container:
+```sh
+git submodule add -f https://github.com/Im0rtality/vesc_pkg.git custom/vesc_pkg
+make build/float.vescpkg VESC_PKG_PATH=custom/vesc_pkg
+```
 
-Docker images are papared, containing GCC, ARM SDK, QT and whatever else required. See `.docker/` for details.
+## Explanation
 
-> DISCLAIMER: This is not set up according to Docker best pratices - focus is to get it running. Contributions appreciated.
+Dockerfile contains all dependencies and dev tools (ARM SDK, Qt5, etc.), meaning your dev-container based environment contains all of them. Some patches are applied to original build scripts (e.g. unhardcoding some paths).
 
-Dev Containers allow moving entire dev environment to run inside Docker image mentioned above. This way, we have predictable versions, paths and dependencies. 
+Next, we are using git submodules to add your own fork into this environment via `custom/vesc_pkg` path. You should be able to manage it similarly to git repo. This method chosen, so your fork does not include any references to this dev environment - so you can keep your pull requests clean.
 
-On Dev Container startup, orignal repos are cloned into dev env and some build script fixes are applied (e.g. unhardcoding file system paths).
+Lastly, we are using customized Makefile to trigger appropriate build scripts from various VESC Project repos, to auto-magically build all dependencies (e.g. you need vesc_tool to build pkg and you need built firmware to build vesc_tool). 

@@ -2,9 +2,11 @@ VESC_FW_PATH ?= /vedderb/bldc
 VESC_TOOL_PATH ?= /vedderb/vesc_tool
 VESC_PKG_PATH ?= /vedderb/vesc_pkg
 
-export PATH := $(PATH):$(shell pwd)/build
+ifeq (,$(wildcard /.dockerenv))
+$(error "This Makefile is intended to be run inside a Docker container")
+endif
 
-$(shell mkdir -p build)
+export PATH := $(PATH):$(shell pwd)/build
 
 build/vesc_tool: build/res_fw.qrc
 	cd $(VESC_TOOL_PATH); ./build_lin_original_only
@@ -31,9 +33,9 @@ clean_packages:
 	rm -f build/*.vescpkg
 
 clean_tool:
-	cd $(VESC_TOOL_PATH); make clean
+	cd $(VESC_TOOL_PATH); rm -rf build/*
 	rm -f build/vesc_tool
 
 clean_fw:
-	cd $(VESC_FW_PATH); make clean
+	cd $(VESC_FW_PATH); make all_fw_clean
 	rm -f build/res_fw.qrc

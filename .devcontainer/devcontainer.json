@@ -1,5 +1,7 @@
 {
-    "image": "vesc-toolchain:vesctool-latest",
-    "postCreateCommand": ".devcontainer/post-create.sh",
-    "postStartCommand": ".devcontainer/post-start.sh"
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace"
 }
